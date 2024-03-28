@@ -4,16 +4,25 @@ import { Text, View } from 'react-native';
 import { s } from "./App.style";
 import { Header } from './components/Header/Header';
 import { CardToDo } from './components/CardToDo/CardToDo';
-
-
-const TODO_LIST = [
-  { id : 1, title:"Walk the dog", isCompleted:true },
-  { id : 2, title:"Eat lunch", isCompleted:false },
-  { id : 3, title:"Go jogging", isCompleted:false } 
-];
+import { useState } from 'react';
 
 
 export default function App() {
+  const  [todoList, setTodoList] = useState(
+    [
+      { id : 1, title:"Walk the dog", isCompleted:true },
+      { id : 2, title:"Eat lunch", isCompleted:false },
+      { id : 3, title:"Go jogging", isCompleted:false } 
+    ]
+  );
+
+  function renderTodoList() {
+    return todoList.map((todo) => 
+    <View key={todo.id} style={s.cardItem} >
+      <CardToDo todo={todo} /> 
+    </View>    
+  );}
+
   return (
     <>
     <SafeAreaProvider>
@@ -22,7 +31,7 @@ export default function App() {
           <Header /> 
         </View>
         <View style={s.body}>
-          <CardToDo todo={TODO_LIST[0]} /> 
+         {renderTodoList()} 
         </View>
         
       </SafeAreaView>
