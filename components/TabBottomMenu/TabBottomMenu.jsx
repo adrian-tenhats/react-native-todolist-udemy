@@ -11,7 +11,6 @@ export function TabBottomMenu({selectedTabName, onPress, todoList}) {
         inProgress: 0,
         done: 0,
     });
-    console.log("counts", countByStatus);
 
     function getTextStyle(tabName){
         return{
