@@ -5,10 +5,13 @@ import { s } from "./App.style";
 import { Header } from './components/Header/Header';
 import { CardToDo } from './components/CardToDo/CardToDo';
 import { TabBottomMenu } from './components/TabBottomMenu/TabBottomMenu';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ButtonAdd } from './components/ButtonAdd/ButtonAdd';
 import Dialog from 'react-native-dialog';
 import uuid from 'react-native-uuid';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+let isFirstRender = true;
 
 export default function App() {
   const  [todoList, setTodoList] = useState([]);
@@ -16,6 +19,37 @@ export default function App() {
   const [isShowAddDialogDisplayed, setIsShowAddDialogDisplayed] = useState(false);
   const [inputValue, setInputValue] = useState("");
 
+  useEffect(()=> {
+    loadTodoList();
+  }, []); // Has empty array, so only loads one time, on load.
+
+  useEffect(()=> {        
+    if(!isFirstRender){
+      saveTodoList();  
+    }    
+  }, [todoList]); // Runs anytime todoList changes
+
+  async function loadTodoList(){    
+    try {
+      const todoListString = await AsyncStorage.getItem("@todoList");
+      const parsedTodoList = JSON.parse(todoListString);      
+      setTodoList(parsedTodoList || []); //Send empty array if null      
+      isFirstRender = false;
+    } catch (error) {
+      alert(error);
+    }
+  }
+  
+  async function saveTodoList(){    
+    if(!isFirstRender){
+      try {
+        await AsyncStorage.setItem("@todoList", JSON.stringify(todoList));
+      } catch (error) {
+        alert(error);
+      }    
+    }    
+  }
+  
   function getFilteredList(){
     switch (selectedTabName){
       case "all":
