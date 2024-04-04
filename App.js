@@ -5,7 +5,7 @@ import { s } from "./App.style";
 import { Header } from './components/Header/Header';
 import { CardToDo } from './components/CardToDo/CardToDo';
 import { TabBottomMenu } from './components/TabBottomMenu/TabBottomMenu';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { ButtonAdd } from './components/ButtonAdd/ButtonAdd';
 import Dialog from 'react-native-dialog';
 import uuid from 'react-native-uuid';
@@ -18,6 +18,7 @@ export default function App() {
   const [selectedTabName, setSelectedTabName]= useState("all");
   const [isShowAddDialogDisplayed, setIsShowAddDialogDisplayed] = useState(false);
   const [inputValue, setInputValue] = useState("");
+  const scrollViewRef = useRef();
 
   useEffect(()=> {
     loadTodoList();
@@ -104,6 +105,9 @@ export default function App() {
     setTodoList([...todoList, newTodo]);
     setIsShowAddDialogDisplayed(false);
     setInputValue("");
+    setTimeout(()=>{
+      scrollViewRef.current.scrollToEnd();
+    }, 300)
   }
 
   
@@ -137,7 +141,7 @@ export default function App() {
             <Header /> 
           </View>
           <View style={s.body}>
-            <ScrollView>{renderTodoList()}</ScrollView>
+            <ScrollView ref={scrollViewRef}>{renderTodoList()}</ScrollView>
           </View>
 
           <ButtonAdd onPress={() => setIsShowAddDialogDisplayed(true)}/>
